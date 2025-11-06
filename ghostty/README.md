@@ -22,3 +22,17 @@ Official packages exist for some Linux distributions (Arch, Alpine, Gentoo, open
 If your distro doesn’t have a package yet, you can build from source.
 
 More info: [https://ghostty.org/docs/install/binary](https://ghostty.org/docs/install/binary)
+
+### ⚙️ Installing configuration 
+To install the configuration, follow these instructions:
+
+1. Go to the directory where the `install.sh` script is located.
+2. Make the script executable.
+    ```bash
+    chmod +x install.sh
+    ```
+3. Run the script.
+    ```bash
+    ./install.sh
+    ```
+
