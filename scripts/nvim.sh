@@ -1,5 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-echo "Adding neovim to .config"
+CONFIG_DIR="$HOME/.config"
+NVIM_DIR="$(pwd)/.."
 
-ln -s "$(pwd)/../nvim" ~/.config/nvim
+mkdir -p "$CONFIG_DIR"
+
+ln -sf "$NVIM_DIR/nvim" "$CONFIG_DIR/nvim"
+
+echo "✅ Neovim configuration installed successfully"
