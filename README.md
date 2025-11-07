@@ -12,3 +12,23 @@ This repository contains my personal **dotfiles**, including configuration and s
 ## Ghostty
 - [Ghostty GitHub Page](https://github.com/ghostty-org/ghostty)
 
+---
+
+## TMUX
+- [Tmux GitHub Page](https://github.com/tmux/tmux)
+
+---
+
+## ZSH
+- [Oh-my-ZSH website](https://ohmyz.sh/#install)
+- Install starship to use oh-my-zsh correctly
+
+## Binaries to install
+
+- RipGrep
+- zoxide
+- starship
+
+- golang binary
+- rust binary
+- javascript through nvm
