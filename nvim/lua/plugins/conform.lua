@@ -27,6 +27,8 @@ return {
 			javascriptreact = { "prettierd", "prettier", stop_after_first = true },
 			terraform = { "terraform", stop_after_first = true },
 			rust = { "rustfmt", stop_after_first = true },
+			c = { "clang-format", stop_after_first = true },
+			cpp = { "clang-format", stop_after_first = true },
 		},
 
 		-- Set default options
