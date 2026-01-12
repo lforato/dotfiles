@@ -75,3 +75,4 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Set loclis
 require("lang.lua")
 require("lang.ts")
 require("lang.go")
+require("lang.templ")

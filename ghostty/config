@@ -6,3 +6,4 @@ background-opacity = .97
 confirm-close-surface = false
 theme = GruvboxDark
 
+keybind = shift+enter=text:\x1b\r

@@ -75,3 +75,44 @@ vim.api.nvim_create_autocmd({ "UIEnter", "BufReadPost", "BufNewFile" }, {
 		end
 	end,
 })
+
+-- Open binary files in Preview (in background), keep buffer open, close Preview when buffer closes
+vim.api.nvim_create_autocmd("BufReadPost", {
+  pattern = "*.pdf",
+  callback = function()
+    local filepath = vim.api.nvim_buf_get_name(0)
+    local filename = vim.fn.shellescape(filepath)
+    local basename = vim.fn.fnamemodify(filepath, ":t")
+
+    vim.cmd("silent !open -g " .. filename)
+
+    -- Close Preview window when buffer is deleted
+    vim.api.nvim_create_autocmd("BufDelete", {
+      buffer = vim.api.nvim_get_current_buf(),
+      callback = function()
+        vim.fn.system({"osascript", "-e", 'tell application "Preview" to close (every window whose name contains "' .. basename .. '")'})
+      end,
+      once = true,
+    })
+  end
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+  pattern = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp" },
+  callback = function()
+    local filepath = vim.api.nvim_buf_get_name(0)
+    local filename = vim.fn.shellescape(filepath)
+    local basename = vim.fn.fnamemodify(filepath, ":t")
+
+    vim.cmd("silent !open -g " .. filename)
+
+    -- Close Preview window when buffer is deleted
+    vim.api.nvim_create_autocmd("BufDelete", {
+      buffer = vim.api.nvim_get_current_buf(),
+      callback = function()
+        vim.fn.system({"osascript", "-e", 'tell application "Preview" to close (every window whose name contains "' .. basename .. '")'})
+      end,
+      once = true,
+    })
+  end
+})

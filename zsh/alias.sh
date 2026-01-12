@@ -1,0 +1,5 @@
+alias lg="lazygit"
+alias v="neovim"
+alias update-submodules="git submodule update --remote --merge"
+alias ec2="TERM=xterm vault ssh -mode=otp -role ec2_lucas.forato ubuntu@lucasforato.nichestage.com"
+alias website="tmuxp load website"
