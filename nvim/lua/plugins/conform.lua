@@ -19,6 +19,7 @@ return {
 	opts = {
 		-- Define your formatters
 		formatters_by_ft = {
+			cmake = { "cmake_format" },
 			lua = { "stylua" },
 			python = { "isort", "black" },
 			javascript = { "prettier", "prettierd", stop_after_first = true },
@@ -37,6 +38,9 @@ return {
 		formatters = {
 			shfmt = {
 				prepend_args = { "-i", "2" },
+			},
+			clang_format = {
+				prepend_args = { "--style=file", "--fallback-style=LLVM" },
 			},
 		},
 	},

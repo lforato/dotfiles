@@ -8,15 +8,16 @@ vim.lsp.config("lua_ls", {
 				version = "LuaJIT",
 			},
 			diagnostics = {
-				globals = { "vim" },
+				globals = { "vim", "love2d", "love" },
 			},
 			workspace = {
-        telemetry = { enable = false },
-        checkThirdParty = false,
-        library = {
-          "${3rd}/love2d/library",
-        },
-      },
+				telemetry = { enable = false },
+				checkThirdParty = false,
+				library = {
+					"${3rd}/love2d/library",
+          "."
+				},
+			},
 			completion = {
 				callSnippet = "Replace",
 			},
