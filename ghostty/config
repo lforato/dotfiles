@@ -1,9 +1,11 @@
 font-family = "JetBrains Mono"
-font-size = 14.0
+font-size = 16.0
+## font-size = 20.0
 
-background-opacity = .97
+background-opacity = 1
 
 confirm-close-surface = false
 theme = GruvboxDark
+background = #1a1a1a
 
 keybind = shift+enter=text:\x1b\r

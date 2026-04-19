@@ -7,6 +7,14 @@ M.gruvbox = {
 	config = function()
 		require("gruvbox").setup({
 			transparent_mode = true,
+			italic = {
+				strings = true,
+				comments = true,
+				operators = false,
+				folds = true,
+				emphasis = true,
+			},
+			bold = true,
 		})
 		vim.o.background = "dark"
 		vim.cmd([[colorscheme gruvbox]])
