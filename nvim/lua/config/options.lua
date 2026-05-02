@@ -10,7 +10,6 @@ g.mapleader = " " -- Space is the leader key
 --------------------------------------------------------------------------------
 -- Clipboard
 --------------------------------------------------------------------------------
-opt.clipboard = "unnamed"     -- Use system clipboard for yank/paste (older register)
 o.clipboard = "unnamedplus"   -- Use system clipboard (+ register) for yank/paste
 
 --------------------------------------------------------------------------------
@@ -91,8 +90,7 @@ o.splitright = true           -- New vertical splits to the right
 --------------------------------------------------------------------------------
 -- Timing
 --------------------------------------------------------------------------------
-opt.updatetime = 30           -- (Initial) CursorHold/update time (ms)
-o.updatetime = 250            -- Override: 250ms for plugins like gitsigns
+o.updatetime = 250            -- CursorHold/update time (ms) — used by gitsigns etc.
 o.timeoutlen = 400            -- Time to wait for mapped sequence (ms)
 
 --------------------------------------------------------------------------------
@@ -112,3 +110,4 @@ g.loaded_node_provider = 0
 g.loaded_python3_provider = 0
 g.loaded_perl_provider = 0
 g.loaded_ruby_provider = 0
+g.loaded_go_provider = 0
