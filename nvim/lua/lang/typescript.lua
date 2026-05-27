@@ -150,3 +150,39 @@ vim.lsp.config("eslint", {
 })
 
 vim.lsp.enable("eslint")
+
+vim.api.nvim_create_user_command("EslintEnable", function()
+	vim.lsp.enable("eslint")
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		if vim.api.nvim_buf_is_loaded(bufnr) then
+			local ft = vim.bo[bufnr].filetype
+			if
+				ft == "javascript"
+				or ft == "javascriptreact"
+				or ft == "javascript.jsx"
+				or ft == "typescript"
+				or ft == "typescriptreact"
+				or ft == "typescript.tsx"
+			then
+				vim.api.nvim_exec_autocmds("FileType", { buffer = bufnr, modeline = false })
+			end
+		end
+	end
+	vim.notify("ESLint enabled", vim.log.levels.INFO)
+end, { desc = "Enable ESLint LSP" })
+
+vim.api.nvim_create_user_command("EslintDisable", function()
+	vim.lsp.enable("eslint", false)
+	for _, client in ipairs(vim.lsp.get_clients({ name = "eslint" })) do
+		client:stop(true)
+	end
+	vim.notify("ESLint disabled", vim.log.levels.INFO)
+end, { desc = "Disable ESLint LSP" })
+
+vim.api.nvim_create_user_command("EslintToggle", function()
+	if #vim.lsp.get_clients({ name = "eslint" }) > 0 then
+		vim.cmd("EslintDisable")
+	else
+		vim.cmd("EslintEnable")
+	end
+end, { desc = "Toggle ESLint LSP" })
