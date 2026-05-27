@@ -10,98 +10,100 @@ g.mapleader = " " -- Space is the leader key
 --------------------------------------------------------------------------------
 -- Clipboard
 --------------------------------------------------------------------------------
-o.clipboard = "unnamedplus"   -- Use system clipboard (+ register) for yank/paste
+-- Defer until after UI ready to avoid blocking startup on provider check.
+vim.schedule(function()
+	o.clipboard = "unnamedplus"
+end)
 
 --------------------------------------------------------------------------------
 -- File Backup & Undo
 --------------------------------------------------------------------------------
-opt.backup = false            -- Disable backup file creation
-opt.swapfile = false          -- Disable swap files
-opt.writebackup = false       -- Don't keep backup before overwriting
-opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- Persistent undo directory
-o.undofile = true             -- Enable persistent undo
+opt.backup = false
+opt.swapfile = false
+opt.writebackup = false
+opt.undodir = vim.fn.stdpath("state") .. "/undo"
+o.undofile = true
 
 --------------------------------------------------------------------------------
 -- Search
 --------------------------------------------------------------------------------
-opt.hlsearch = false          -- Don't highlight search results after searching
-opt.incsearch = true          -- Show matches as you type
-o.ignorecase = true           -- Case-insensitive search...
-o.smartcase = true            -- ...unless the search contains uppercase
+opt.hlsearch = false
+opt.incsearch = true
+o.ignorecase = true
+o.smartcase = true
 
 --------------------------------------------------------------------------------
 -- UI Appearance
 --------------------------------------------------------------------------------
-o.termguicolors = true        -- Enable true color support
-opt.colorcolumn = "80"        -- Show column guide at 80 characters
-opt.wrap = false              -- Disable line wrapping
-opt.scrolloff = 8             -- Keep 8 lines above/below cursor
-opt.sidescrolloff = 8         -- Keep 8 columns left/right of cursor
-opt.fillchars = { eob = " " } -- Remove ~ from empty lines
-o.signcolumn = "yes"          -- Always show the sign column
-o.winborder = "rounded"       -- Rounded window borders (for floating windows)
-o.cursorline = true           -- Highlight current line
-o.cursorlineopt = "number"    -- Highlight current line number
+o.termguicolors = true
+opt.colorcolumn = "80"
+opt.wrap = false
+opt.scrolloff = 8
+opt.sidescrolloff = 8
+opt.fillchars = { eob = " " }
+o.signcolumn = "yes"
+o.winborder = "rounded"
+o.cursorline = true
+o.cursorlineopt = "number"
 
 --------------------------------------------------------------------------------
 -- Status & Tabs
 --------------------------------------------------------------------------------
-o.laststatus = 3              -- Global statusline
-opt.showtabline = 2           -- Always show tabline
-opt.showmode = false          -- Hide "-- INSERT --" (statusline handles this)
-o.showmode = false            -- (Duplicate for safety)
-o.splitkeep = "screen"        -- Keep same view when splitting
+o.laststatus = 3
+opt.showtabline = 2
+opt.showmode = false
+o.splitkeep = "screen"
 
 --------------------------------------------------------------------------------
 -- Numbers
 --------------------------------------------------------------------------------
-o.number = true               -- Show absolute line numbers
-opt.relativenumber = true     -- Show relative line numbers
-o.numberwidth = 3             -- Width of line number column
-o.ruler = false               -- Hide default ruler
+o.number = true
+opt.relativenumber = true
+o.numberwidth = 3
+o.ruler = false
 
 --------------------------------------------------------------------------------
 -- Completion
 --------------------------------------------------------------------------------
-opt.completeopt = { "menuone", "noselect", "noinsert" } -- Completion menu settings
-opt.pumheight = 10            -- Max items in completion menu
-opt.shortmess = opt.shortmess + { c = true } -- Less verbose messages
+opt.completeopt = { "menuone", "noselect", "noinsert" }
+opt.pumheight = 10
+opt.shortmess = opt.shortmess + { c = true }
 
 --------------------------------------------------------------------------------
 -- Command Line
 --------------------------------------------------------------------------------
-opt.cmdheight = 1             -- Command line height
+opt.cmdheight = 1
 
 --------------------------------------------------------------------------------
 -- Indentation
 --------------------------------------------------------------------------------
-o.expandtab = true            -- Convert tabs to spaces
-o.shiftwidth = 2              -- Number of spaces per indent
-o.smartindent = true          -- Smart auto-indenting
-o.tabstop = 2                 -- Spaces per tab
-o.softtabstop = 2             -- Spaces for <Tab> in insert mode
+o.expandtab = true
+o.shiftwidth = 2
+o.smartindent = true
+o.tabstop = 2
+o.softtabstop = 2
 
 --------------------------------------------------------------------------------
 -- Splits
 --------------------------------------------------------------------------------
-o.splitbelow = true           -- New horizontal splits below
-o.splitright = true           -- New vertical splits to the right
+o.splitbelow = true
+o.splitright = true
 
 --------------------------------------------------------------------------------
 -- Timing
 --------------------------------------------------------------------------------
-o.updatetime = 250            -- CursorHold/update time (ms) — used by gitsigns etc.
-o.timeoutlen = 400            -- Time to wait for mapped sequence (ms)
+o.updatetime = 250
+o.timeoutlen = 300
 
 --------------------------------------------------------------------------------
 -- Mouse
 --------------------------------------------------------------------------------
-o.mouse = "a"                 -- Enable mouse in all modes
+o.mouse = "a"
 
 --------------------------------------------------------------------------------
 -- Navigation
 --------------------------------------------------------------------------------
-opt.whichwrap:append("<>[]hl") -- Allow cursor to wrap with arrow keys/h/l
+opt.whichwrap:append("<>[]hl")
 
 --------------------------------------------------------------------------------
 -- Disable unused language providers

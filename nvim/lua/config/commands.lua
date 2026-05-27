@@ -1,33 +1,48 @@
 --------------------------------------------------------------------------------
---- CMD
+--- Filetype detection + per-filetype settings
 --------------------------------------------------------------------------------
 
-vim.cmd([[
-  autocmd BufRead,BufNewFile *.html setfiletype html
-]])
+vim.filetype.add({
+	extension = {
+		sql = "sql",
+	},
+	pattern = {
+		[".*%.html"] = "html",
+	},
+})
 
-vim.cmd([[
-  autocmd bufread,bufnewfile *.sql setfiletype sql
-]])
+-- Disable diagnostics in .env* files
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+	pattern = ".env*",
+	callback = function(args)
+		vim.diagnostic.enable(false, { bufnr = args.buf })
+	end,
+})
 
-vim.cmd([[
-  autocmd BufRead,BufNewFile .env* lua vim.diagnostic.disable()
-]])
+-- Floating diagnostic on CursorHold
+vim.api.nvim_create_autocmd("CursorHold", {
+	callback = function()
+		vim.diagnostic.open_float(nil, { focusable = false })
+	end,
+})
 
-vim.cmd([[
-  set fillchars=horiz:\─,vert:\│,horizdown:\┬,horizup:\┴,vertright:\├,vertleft:\┤,verthoriz:\┼
-]])
+-- HTML uses 2-space indent
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "html",
+	callback = function()
+		vim.opt_local.tabstop = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.shiftwidth = 2
+	end,
+})
 
-vim.cmd([[
-  set signcolumn=yes
-  autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
-]])
-
-vim.cmd([[
-  set clipboard=unnamedplus
-]])
-
-vim.cmd([[
-  autocmd FileType html setlocal ts=2 sts=2 sw=2
-  autocmd FileType html,typescript,css,javascript,jsx,tsx setlocal omnifunc=v:lua.vim.lsp.omnifunc
-]])
+-- Split fillchars (eob handled in options.lua)
+vim.opt.fillchars:append({
+	horiz = "─",
+	vert = "│",
+	horizdown = "┬",
+	horizup = "┴",
+	vertright = "├",
+	vertleft = "┤",
+	verthoriz = "┼",
+})

@@ -1,6 +1,5 @@
-local keymap = function(mode, keymap, cmd, opts)
-  opts = opts or { noremap = true, silent = true }
-	vim.keymap.set(mode, keymap, cmd, opts)
-end
+local defaults = { noremap = true, silent = true }
 
-return keymap
+return function(mode, lhs, rhs, opts)
+	vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", defaults, opts or {}))
+end

@@ -1,35 +1,8 @@
------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Auto Commands
 --------------------------------------------------------------------------------
 
--- This autocommand is used by the LSP to set up mappings for some commands
-vim.api.nvim_create_autocmd("LspAttach", {
-	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-	callback = function(ev)
-		vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
-
-		local opts = { buffer = ev.buf, remap = false }
-		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-		vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-		vim.keymap.set("n", "<leader>cr", vim.lsp.buf.rename, opts)
-		vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-		vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-		vim.keymap.set("n", "Y", vim.diagnostic.open_float)
-	end,
-})
-
--- Update lsp diagnostics on paste
-vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
-	callback = function()
-		vim.diagnostic.setloclist({ open = false })
-		vim.diagnostic.enable()
-		vim.diagnostic.show()
-	end,
-})
-
--- This changes the tab width if user is in a Makefile
+-- Tab settings for Makefiles (tabs required)
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "make",
 	callback = function()
@@ -40,7 +13,7 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
--- This autocommand gets the previous session from persistent on opening directory
+-- Restore previous session when opening any non-$HOME directory
 vim.api.nvim_create_autocmd("VimEnter", {
 	group = vim.api.nvim_create_augroup("restore_session", { clear = true }),
 	callback = function()
@@ -76,43 +49,28 @@ vim.api.nvim_create_autocmd({ "UIEnter", "BufReadPost", "BufNewFile" }, {
 	end,
 })
 
--- Open binary files in Preview (in background), keep buffer open, close Preview when buffer closes
+-- Open binary files in macOS Preview, keep buffer open, close Preview when buffer closes
+local function open_in_preview(args)
+	local filepath = vim.api.nvim_buf_get_name(args.buf)
+	local filename = vim.fn.shellescape(filepath)
+	local basename = vim.fn.fnamemodify(filepath, ":t")
+
+	vim.cmd("silent !open -g " .. filename)
+
+	vim.api.nvim_create_autocmd("BufDelete", {
+		buffer = args.buf,
+		once = true,
+		callback = function()
+			vim.fn.system({
+				"osascript",
+				"-e",
+				'tell application "Preview" to close (every window whose name contains "' .. basename .. '")',
+			})
+		end,
+	})
+end
+
 vim.api.nvim_create_autocmd("BufReadPost", {
-  pattern = "*.pdf",
-  callback = function()
-    local filepath = vim.api.nvim_buf_get_name(0)
-    local filename = vim.fn.shellescape(filepath)
-    local basename = vim.fn.fnamemodify(filepath, ":t")
-
-    vim.cmd("silent !open -g " .. filename)
-
-    -- Close Preview window when buffer is deleted
-    vim.api.nvim_create_autocmd("BufDelete", {
-      buffer = vim.api.nvim_get_current_buf(),
-      callback = function()
-        vim.fn.system({"osascript", "-e", 'tell application "Preview" to close (every window whose name contains "' .. basename .. '")'})
-      end,
-      once = true,
-    })
-  end
-})
-
-vim.api.nvim_create_autocmd("BufReadPost", {
-  pattern = { "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp" },
-  callback = function()
-    local filepath = vim.api.nvim_buf_get_name(0)
-    local filename = vim.fn.shellescape(filepath)
-    local basename = vim.fn.fnamemodify(filepath, ":t")
-
-    vim.cmd("silent !open -g " .. filename)
-
-    -- Close Preview window when buffer is deleted
-    vim.api.nvim_create_autocmd("BufDelete", {
-      buffer = vim.api.nvim_get_current_buf(),
-      callback = function()
-        vim.fn.system({"osascript", "-e", 'tell application "Preview" to close (every window whose name contains "' .. basename .. '")'})
-      end,
-      once = true,
-    })
-  end
+	pattern = { "*.pdf", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp" },
+	callback = open_in_preview,
 })

@@ -1,111 +1,54 @@
 local keymap = require("helpers.keymap")
-local fidget = require("fidget")
 
 --------------------------------------------------------------------------------
 -- Toggle
 --------------------------------------------------------------------------------
 
--- Toggle git blame
-keymap("n", "<leader>tb", function()
-	vim.cmd(":Gitsigns blame_line")
-	fidget.notify("Toggled Git Blame", vim.log.levels.SUCESS)
-end)
-
--- Toggle explorer
-keymap("n", "<leader>e", ":NvimTreeToggle<cr>")
-
-keymap("n", "<leader>e", ":NvimTreeToggle<cr>")
-
--- Toggle comments in normal mode
+keymap("n", "<leader>tb", "<cmd>Gitsigns blame_line<cr>", { desc = "Toggle git blame" })
 keymap("n", "<leader>/", function()
 	require("Comment.api").toggle.linewise.current()
-end)
-
--- Toggle comments in visual mode
-keymap("v", "<leader>/", "<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>")
-
--- Toggle trouble
+end, { desc = "Toggle comment" })
+keymap(
+	"v",
+	"<leader>/",
+	"<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
+	{ desc = "Toggle comment" }
+)
 keymap("n", "<leader>tt", function()
 	require("trouble").focus("diagnostics")
-end)
-
+end, { desc = "Toggle Trouble" })
 keymap("n", "tt", function()
 	require("trouble").focus("diagnostics")
-end)
+end, { desc = "Focus Trouble" })
 
 --------------------------------------------------------------------------------
--- Controlling files ands buffers
+-- Files and buffers
 --------------------------------------------------------------------------------
 
--- Save file
-keymap("n", "<leader>fs", function()
-	fidget.notify("Saving file...", vim.log.levels.SUCCESS)
-	vim.cmd(":w!")
-	fidget.notify("Saved file.", vim.log.levels.SUCCESS)
-end)
+keymap("n", "<leader>fs", "<cmd>w!<cr>", { desc = "Save file" })
+keymap("n", "<leader>w", "<cmd>w<bar>bdelete!<cr>", { desc = "Save and close buffer" })
+keymap("n", "<leader>x", "<cmd>bdelete!<cr>", { desc = "Close buffer" })
 
--- Save and close file
-keymap("n", "<leader>w", function()
-	fidget.notify("Saving file...", vim.log.levels.SUCCESS)
-	vim.cmd(":w")
-	vim.cmd(":bdelete!")
-	fidget.notify("Saved file.", vim.log.levels.SUCCESS)
-end)
+keymap({ "n", "v" }, "<leader>,", "<cmd>BufferPrevious<cr>", { desc = "Previous buffer" })
+keymap({ "n", "v" }, "<leader>.", "<cmd>BufferNext<cr>", { desc = "Next buffer" })
 
--- Close file
-keymap("n", "<leader>x", ":bdelete!<cr>")
-
--- Buffers
-keymap({ "n", "v" }, "<leader>,", function()
-	vim.cmd(":BufferPrevious")
-end)
-keymap({ "n", "v" }, "<leader>.", function()
-	vim.cmd(":BufferNext")
-end)
-
--- Open current file in finder
-keymap("n", "<leader>fb", ":Rfinder<cr>")
-
---------------------------------------------------------------------------------
--- Searching
---------------------------------------------------------------------------------
-
--- Telescope
-local builtin = require("telescope.builtin")
-keymap("n", "<leader>ff", builtin.find_files)
-keymap("n", "<leader>fg", builtin.git_files)
-
-keymap("n", "<leader>fw", builtin.live_grep)
-keymap("n", "<leader>fr", builtin.resume)
-
--- Projects
-keymap("n", "<C-p>", ":Telescope projects<cr>")
+keymap("n", "<leader>fb", "<cmd>Rfinder<cr>", { desc = "Reveal in Finder" })
 
 --------------------------------------------------------------------------------
 -- Coding utilities
 --------------------------------------------------------------------------------
 
--- Indentation
-keymap("v", "<", "<gv")
-keymap("v", ">", ">gv")
+keymap("v", "<", "<gv", { desc = "Indent left, keep selection" })
+keymap("v", ">", ">gv", { desc = "Indent right, keep selection" })
 
--- Diagnostics
 keymap("n", "<leader>cf", function()
 	vim.diagnostic.open_float({ border = "rounded" })
-end)
+end, { desc = "Code floating diagnostics" })
 
--- Moving Highlighting text
-keymap("v", "J", ":m '>+1<CR>gv=gv")
-keymap("v", "K", ":m '<-2<CR>gv=gv")
+keymap("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+keymap("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
--- Maintain cursor in the center when going to next
-keymap("n", "n", "nzzzv")
-keymap("n", "N", "Nzzzv")
+keymap("n", "n", "nzzzv", { desc = "Next search, centered" })
+keymap("n", "N", "Nzzzv", { desc = "Prev search, centered" })
 
--- Better undo
-keymap("n", "U", ":redo<CR>")
-
--- Refactor
-keymap("n", "<leader>tr", '<cmd>lua require("spectre").toggle()<CR>', {
-	desc = "Toggle Spectre",
-})
+keymap("n", "U", "<cmd>redo<cr>", { desc = "Redo" })

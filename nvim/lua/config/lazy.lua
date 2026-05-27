@@ -13,15 +13,13 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
 	{ import = "plugins" },
-	{ import = "lang.typescript.plugins" },
 }, {
 	install = {
 		missing = true,
 		colorscheme = { "tokyonight", "habamax" },
 	},
 	checker = {
-		enabled = true,
-		notify = false,
+		enabled = false,
 	},
 	change_detection = {
 		enabled = true,

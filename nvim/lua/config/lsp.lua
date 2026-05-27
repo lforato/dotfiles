@@ -34,22 +34,31 @@ vim.lsp.config("*", {
 	root_markers = { ".git" },
 })
 
--- 2. Set up LSP keymaps and behaviors on attach
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("user_lsp_attach", { clear = true }),
 	callback = function(args)
 		local client = vim.lsp.get_client_by_id(args.data.client_id)
 		local bufnr = args.buf
 
-		-- Disable semantic tokens if needed
-		client.server_capabilities.semanticTokensProvider = nil
+		if client then
+			client.server_capabilities.semanticTokensProvider = nil
+		end
 
-		-- Keymaps
-		local opts = { buffer = bufnr, noremap = true, silent = true }
+		vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-		vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
+		local map = function(mode, lhs, rhs, desc)
+			vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, noremap = true, silent = true, desc = "LSP: " .. desc })
+		end
+
+		map("n", "gd", vim.lsp.buf.definition, "Go to definition")
+		map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+		map("n", "gi", vim.lsp.buf.implementation, "Go to implementation")
+		map("n", "gr", vim.lsp.buf.references, "References")
+		map("n", "K", vim.lsp.buf.hover, "Hover docs")
+		map("i", "<C-k>", vim.lsp.buf.signature_help, "Signature help")
+		map("n", "<leader>cr", vim.lsp.buf.rename, "Rename")
+		map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, "Code action")
+		map("n", "Y", vim.diagnostic.open_float, "Show diagnostic float")
 	end,
 })
 
@@ -62,7 +71,6 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Set loclis
 require("lang.lua")
 require("lang.typescript")
 require("lang.go")
-require("lang.templ")
 require("lang.cpp")
 require("lang.rust")
 require("lang.cmake")

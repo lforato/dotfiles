@@ -13,7 +13,6 @@ local function on_attach(bufnr)
 	vim.keymap.set("n", "y", api.fs.copy.node, opts("Copy"))
 	vim.keymap.set("n", "a", api.fs.create, opts("Create"))
 	vim.keymap.set("n", "o", api.node.open.edit, opts("Open"))
-	vim.keymap.set("n", "d", api.node.open.edit, opts("Open"))
 	vim.keymap.set("n", "d", api.fs.remove, opts("Delete"))
 	vim.keymap.set("n", "S", api.tree.search_node, opts("Search"))
 	vim.keymap.set("n", "W", api.tree.collapse_all, opts("Collapse"))
@@ -22,57 +21,56 @@ end
 return {
 	"nvim-tree/nvim-tree.lua",
 	version = "*",
-	enabled = true,
-	lazy = false,
-	async = false,
 	dependencies = {
 		"nvim-tree/nvim-web-devicons",
 	},
-	config = function()
-		require("nvim-tree").setup({
-			on_attach = on_attach,
-			git = {
-				enable = true,
+	keys = {
+		{ "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "File Tree" },
+	},
+	cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeFocus", "NvimTreeFindFile" },
+	opts = {
+		on_attach = on_attach,
+		git = {
+			enable = true,
+		},
+		view = {
+			side = "left",
+			width = {
+				min = 40,
+				max = 100,
 			},
-			view = {
-				side = "left",
-				width = {
-					min = 40,
-					max = 100,
+		},
+		filters = {
+			dotfiles = false,
+			git_ignored = false,
+		},
+		renderer = {
+			highlight_git = true,
+			icons = {
+				show = {
+					git = true,
 				},
 			},
-			filters = {
-				dotfiles = false,
-				git_ignored = false,
-			},
-			renderer = {
-				highlight_git = true,
+			indent_width = 2,
+			indent_markers = {
+				enable = true,
 				icons = {
-					show = {
-						git = true,
-					},
-				},
-				indent_width = 2,
-				indent_markers = {
-					enable = true,
-					icons = {
-						corner = "└ ",
-						edge = "│ ",
-						item = "│ ",
-						none = "  ",
-					},
+					corner = "└ ",
+					edge = "│ ",
+					item = "│ ",
+					none = "  ",
 				},
 			},
-			actions = {
-				open_file = {
-					quit_on_open = true,
-				},
+		},
+		actions = {
+			open_file = {
+				quit_on_open = true,
 			},
-			update_focused_file = {
-				enable = true,
-				update_root = false,
-				ignore_list = {},
-			},
-		})
-	end,
+		},
+		update_focused_file = {
+			enable = true,
+			update_root = false,
+			ignore_list = {},
+		},
+	},
 }

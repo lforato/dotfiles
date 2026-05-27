@@ -1,23 +1,21 @@
 return {
 	{
 		"williamboman/mason.nvim",
+		cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUpdate", "MasonLog" },
 		dependencies = {
-			"williamboman/mason-lspconfig.nvim",
 			"neovim/nvim-lspconfig",
 			"mfussenegger/nvim-lint",
 			"rshkarin/mason-nvim-lint",
 		},
-		config = function()
-			require("mason").setup({
-				ui = {
-					icons = {
-						package_installed = "✓",
-						package_pending = "➜",
-						package_uninstalled = "✗",
-					},
+		opts = {
+			ui = {
+				icons = {
+					package_installed = "✓",
+					package_pending = "➜",
+					package_uninstalled = "✗",
 				},
-			})
-		end,
+			},
+		},
 	},
 	{
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
