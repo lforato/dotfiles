@@ -40,6 +40,8 @@ return {
 				"shfmt",
 				"black",
 				"isort",
+				-- Debug adapter
+				"codelldb",
 			},
 			run_on_start = true,
 			auto_update = false,

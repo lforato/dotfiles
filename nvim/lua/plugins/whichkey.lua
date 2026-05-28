@@ -18,8 +18,11 @@ return {
 		},
 		spec = {
 			{ "<leader>c", group = "Code" },
+			{ "<leader>d", group = "Debug" },
 			{ "<leader>f", group = "File" },
 			{ "<leader>g", group = "Go to" },
+			{ "<leader>o", group = "Open / Organize" },
+			{ "<leader>r", group = "Refactor" },
 			{ "<leader>t", group = "Toggle" },
 		},
 	},

@@ -56,32 +56,6 @@ local function on_clangd_attach(client, bufnr)
 	end, { buffer = bufnr, desc = "Switch header/source" })
 end
 
-local function on_ts_attach(client, bufnr)
-	vim.api.nvim_buf_create_user_command(bufnr, "LspTypescriptSourceAction", function()
-		local source_actions = vim.tbl_filter(function(action)
-			return vim.startswith(action, "source.")
-		end, client.server_capabilities.codeActionProvider.codeActionKinds or {})
-
-		vim.lsp.buf.code_action({
-			context = { only = source_actions },
-		})
-	end, { desc = "TypeScript source actions (organize imports, etc.)" })
-
-	vim.keymap.set("n", "<leader>oi", function()
-		vim.lsp.buf.code_action({
-			context = { only = { "source.organizeImports" } },
-			apply = true,
-		})
-	end, { buffer = bufnr, desc = "Organize imports" })
-
-	vim.keymap.set("n", "<leader>ru", function()
-		vim.lsp.buf.code_action({
-			context = { only = { "source.removeUnused" } },
-			apply = true,
-		})
-	end, { buffer = bufnr, desc = "Remove unused imports" })
-end
-
 local eslint_commands_registered = false
 local function on_eslint_attach()
 	if eslint_commands_registered then
@@ -127,7 +101,6 @@ end
 
 local attach_handlers = {
 	clangd = on_clangd_attach,
-	ts_ls = on_ts_attach,
 	eslint = on_eslint_attach,
 }
 
@@ -163,10 +136,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.diagnostic.jump({ count = 1, float = true })
 		end, "Next diagnostic")
 
-		if client and client:supports_method("textDocument/inlayHint") then
-			vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-		end
-
 		local handler = client and attach_handlers[client.name]
 		if handler then
 			handler(client, bufnr)
@@ -176,12 +145,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Set loclist" })
 
+vim.keymap.set("n", "<leader>th", function()
+	local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
+	vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
+end, { desc = "Toggle inlay hints" })
+
 vim.lsp.enable({
 	"lua_ls",
 	"clangd",
 	"gopls",
 	"rust_analyzer",
 	"neocmake",
-	"ts_ls",
 	"eslint",
+	-- ts_ls is handled by typescript-tools.nvim (lua/plugins/typescript-tools.lua)
 })
