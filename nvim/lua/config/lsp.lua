@@ -34,6 +34,23 @@ vim.lsp.config("*", {
 	root_markers = { ".git" },
 })
 
+local function on_clangd_attach(client, bufnr)
+	vim.keymap.set("n", "<leader>oh", function()
+		local params = vim.lsp.util.make_text_document_params(bufnr)
+		client:request("textDocument/switchSourceHeader", params, function(err, result)
+			if err then
+				vim.notify(tostring(err), vim.log.levels.ERROR)
+				return
+			end
+			if not result then
+				vim.notify("No matching source/header file", vim.log.levels.WARN)
+				return
+			end
+			vim.cmd.edit(vim.uri_to_fname(result))
+		end, bufnr)
+	end, { buffer = bufnr, desc = "Switch header/source" })
+end
+
 local function on_ts_attach(client, bufnr)
 	vim.api.nvim_buf_create_user_command(bufnr, "LspTypescriptSourceAction", function()
 		local source_actions = vim.tbl_filter(function(action)
@@ -88,8 +105,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.diagnostic.jump({ count = 1, float = true })
 		end, "Next diagnostic")
 
+		if client and client:supports_method("textDocument/inlayHint") then
+			vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+		end
+
 		if client and client.name == "ts_ls" then
 			on_ts_attach(client, bufnr)
+		end
+
+		if client and client.name == "clangd" then
+			on_clangd_attach(client, bufnr)
 		end
 	end,
 })
