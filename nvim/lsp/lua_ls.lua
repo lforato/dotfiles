@@ -1,4 +1,4 @@
-vim.lsp.config("lua_ls", {
+return {
 	cmd = { "lua-language-server" },
 	filetypes = { "lua" },
 	root_markers = { ".luarc.json", ".luacheckrc", ".stylua.toml" },
@@ -15,7 +15,7 @@ vim.lsp.config("lua_ls", {
 				checkThirdParty = false,
 				library = {
 					"${3rd}/love2d/library",
-          "."
+					".",
 				},
 			},
 			completion = {
@@ -23,6 +23,4 @@ vim.lsp.config("lua_ls", {
 			},
 		},
 	},
-})
-
-vim.lsp.enable("lua_ls")
+}

@@ -1,6 +1,7 @@
 local ok, blink = pcall(require, "blink.cmp")
 local blink_caps = ok and blink.get_lsp_capabilities() or {}
 
+-- Defaults applied to every LSP client via deep-merge with each lsp/<name>.lua spec.
 vim.lsp.config("*", {
 	capabilities = vim.tbl_deep_extend("force", {
 		textDocument = {
@@ -33,6 +34,10 @@ vim.lsp.config("*", {
 	}, blink_caps),
 	root_markers = { ".git" },
 })
+
+--------------------------------------------------------------------------------
+-- Per-server attach handlers
+--------------------------------------------------------------------------------
 
 local function on_clangd_attach(client, bufnr)
 	vim.keymap.set("n", "<leader>oh", function()
@@ -77,6 +82,59 @@ local function on_ts_attach(client, bufnr)
 	end, { buffer = bufnr, desc = "Remove unused imports" })
 end
 
+local eslint_commands_registered = false
+local function on_eslint_attach()
+	if eslint_commands_registered then
+		return
+	end
+	eslint_commands_registered = true
+
+	local js_filetypes = {
+		javascript = true,
+		javascriptreact = true,
+		["javascript.jsx"] = true,
+		typescript = true,
+		typescriptreact = true,
+		["typescript.tsx"] = true,
+	}
+
+	vim.api.nvim_create_user_command("EslintEnable", function()
+		vim.lsp.enable("eslint")
+		for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+			if vim.api.nvim_buf_is_loaded(bufnr) and js_filetypes[vim.bo[bufnr].filetype] then
+				vim.api.nvim_exec_autocmds("FileType", { buffer = bufnr, modeline = false })
+			end
+		end
+		vim.notify("ESLint enabled", vim.log.levels.INFO)
+	end, { desc = "Enable ESLint LSP" })
+
+	vim.api.nvim_create_user_command("EslintDisable", function()
+		vim.lsp.enable("eslint", false)
+		for _, client in ipairs(vim.lsp.get_clients({ name = "eslint" })) do
+			client:stop(true)
+		end
+		vim.notify("ESLint disabled", vim.log.levels.INFO)
+	end, { desc = "Disable ESLint LSP" })
+
+	vim.api.nvim_create_user_command("EslintToggle", function()
+		if #vim.lsp.get_clients({ name = "eslint" }) > 0 then
+			vim.cmd("EslintDisable")
+		else
+			vim.cmd("EslintEnable")
+		end
+	end, { desc = "Toggle ESLint LSP" })
+end
+
+local attach_handlers = {
+	clangd = on_clangd_attach,
+	ts_ls = on_ts_attach,
+	eslint = on_eslint_attach,
+}
+
+--------------------------------------------------------------------------------
+-- Unified LspAttach: generic keymaps + inlay hints + per-server dispatch
+--------------------------------------------------------------------------------
+
 vim.api.nvim_create_autocmd("LspAttach", {
 	group = vim.api.nvim_create_augroup("user_lsp_attach", { clear = true }),
 	callback = function(args)
@@ -109,26 +167,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 		end
 
-		if client and client.name == "ts_ls" then
-			on_ts_attach(client, bufnr)
-		end
-
-		if client and client.name == "clangd" then
-			on_clangd_attach(client, bufnr)
+		local handler = client and attach_handlers[client.name]
+		if handler then
+			handler(client, bufnr)
 		end
 	end,
 })
 
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Set loclist" })
 
---------------------------------------------------------------------------------
---- Languages
---------------------------------------------------------------------------------
-
-require("languages.lua")
-require("languages.typescript")
-require("languages.eslint")
-require("languages.go")
-require("languages.cpp")
-require("languages.rust")
-require("languages.cmake")
+vim.lsp.enable({
+	"lua_ls",
+	"clangd",
+	"gopls",
+	"rust_analyzer",
+	"neocmake",
+	"ts_ls",
+	"eslint",
+})

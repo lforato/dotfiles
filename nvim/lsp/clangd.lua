@@ -1,4 +1,4 @@
-vim.lsp.config("clangd", {
+return {
 	cmd = {
 		"clangd",
 		"--background-index",
@@ -31,6 +31,4 @@ vim.lsp.config("clangd", {
 		completeUnimported = true,
 		clangdFileStatus = true,
 	},
-})
-
-vim.lsp.enable("clangd")
+}

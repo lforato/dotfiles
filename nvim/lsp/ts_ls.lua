@@ -1,4 +1,4 @@
-vim.lsp.config("ts_ls", {
+return {
 	cmd = { "typescript-language-server", "--stdio" },
 	filetypes = {
 		"javascript",
@@ -53,6 +53,4 @@ vim.lsp.config("ts_ls", {
 			return vim.NIL
 		end,
 	},
-})
-
-vim.lsp.enable("ts_ls")
+}
