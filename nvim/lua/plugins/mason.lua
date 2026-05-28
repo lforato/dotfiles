@@ -22,7 +22,25 @@ return {
 		dependencies = { "williamboman/mason.nvim" },
 		opts_extend = { "ensure_installed" },
 		opts = {
-			ensure_installed = {},
+			ensure_installed = {
+				-- LSP servers
+				"lua-language-server",
+				"gopls",
+				"rust-analyzer",
+				"clangd",
+				"typescript-language-server",
+				"eslint-lsp",
+				"neocmakelsp",
+				-- Formatters
+				"stylua",
+				"prettier",
+				"prettierd",
+				"clang-format",
+				"cmakelang",
+				"shfmt",
+				"black",
+				"isort",
+			},
 			run_on_start = true,
 			auto_update = false,
 		},

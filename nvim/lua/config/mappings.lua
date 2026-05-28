@@ -1,4 +1,4 @@
-local keymap = require("helpers.keymap")
+local keymap = require("utils.keymap")
 
 --------------------------------------------------------------------------------
 -- Toggle
