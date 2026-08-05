@@ -79,9 +79,15 @@ opt.cmdheight = 1
 --------------------------------------------------------------------------------
 o.expandtab = true
 o.shiftwidth = 2
-o.smartindent = true
 o.tabstop = 2
 o.softtabstop = 2
+o.autoindent = true
+o.breakindent = true
+
+-- Treesitter's indentexpr owns indentation. smartindent only applies where
+-- indentexpr declines (returns -1) — comments and lone braces, mostly — and its
+-- C-style heuristics are wrong there, which is what made those lines jump.
+o.smartindent = false
 
 --------------------------------------------------------------------------------
 -- Splits

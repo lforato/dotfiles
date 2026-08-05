@@ -19,23 +19,6 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 	end,
 })
 
--- Floating diagnostic on CursorHold
-vim.api.nvim_create_autocmd("CursorHold", {
-	callback = function()
-		vim.diagnostic.open_float(nil, { focusable = false })
-	end,
-})
-
--- HTML uses 2-space indent
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "html",
-	callback = function()
-		vim.opt_local.tabstop = 2
-		vim.opt_local.softtabstop = 2
-		vim.opt_local.shiftwidth = 2
-	end,
-})
-
 -- Split fillchars (eob handled in options.lua)
 vim.opt.fillchars:append({
 	horiz = "─",

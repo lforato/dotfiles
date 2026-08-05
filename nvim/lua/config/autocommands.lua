@@ -2,25 +2,40 @@
 --- Auto Commands
 --------------------------------------------------------------------------------
 
--- Tab settings for Makefiles (tabs required)
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "make",
-	callback = function()
-		vim.opt_local.expandtab = false
-		vim.opt_local.tabstop = 8
-		vim.opt_local.shiftwidth = 8
-		vim.opt_local.softtabstop = 0
-	end,
-})
+--------------------------------------------------------------------------------
+--- Per-filetype indentation
+--------------------------------------------------------------------------------
 
--- Tab settings for GDScript (Godot style guide requires tabs)
+-- Filetypes whose toolchain expects hard tabs: make needs them to function at
+-- all, gofmt and the Godot style guide both mandate them. A project's
+-- .editorconfig still overrides this, reapplied by the FilePost handler below.
+local tab_indented = {
+	make = { tabstop = 8, shiftwidth = 8 },
+	go = { tabstop = 4, shiftwidth = 4 },
+	gomod = { tabstop = 4, shiftwidth = 4 },
+	gdscript = { tabstop = 4, shiftwidth = 4 },
+}
+
 vim.api.nvim_create_autocmd("FileType", {
-	pattern = "gdscript",
-	callback = function()
-		vim.opt_local.expandtab = false
-		vim.opt_local.tabstop = 4
-		vim.opt_local.shiftwidth = 4
-		vim.opt_local.softtabstop = 0
+	group = vim.api.nvim_create_augroup("user_indent", { clear = true }),
+	callback = function(args)
+		local indent = tab_indented[args.match]
+		if not indent then
+			return
+		end
+
+		-- Nvim applies .editorconfig on BufRead, before FileType, so without this
+		-- guard these defaults would silently overwrite whatever the project asked
+		-- for. vim.b.editorconfig holds the properties that actually got applied.
+		local editorconfig = vim.b[args.buf].editorconfig
+		if editorconfig and (editorconfig.indent_style or editorconfig.indent_size or editorconfig.tab_width) then
+			return
+		end
+
+		vim.bo[args.buf].expandtab = false
+		vim.bo[args.buf].softtabstop = 0
+		vim.bo[args.buf].tabstop = indent.tabstop
+		vim.bo[args.buf].shiftwidth = indent.shiftwidth
 	end,
 })
 

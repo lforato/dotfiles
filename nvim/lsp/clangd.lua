@@ -11,6 +11,7 @@ return {
 		"--enable-config",
 		"--limit-references=0",
 		"--limit-results=0",
+		"--all-scopes-completion",
 	},
 	filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
 	root_markers = {

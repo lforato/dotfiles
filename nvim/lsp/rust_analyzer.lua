@@ -15,9 +15,17 @@ return {
 			checkOnSave = true,
 			check = {
 				command = "clippy",
+				-- Without this, tests and benches are never type-checked.
+				allTargets = true,
 			},
 			procMacro = {
 				enable = true,
+			},
+			inlayHints = {
+				parameterHints = { enable = true },
+				typeHints = { enable = true },
+				chainingHints = { enable = true },
+				closureReturnTypeHints = { enable = "with_block" },
 			},
 		},
 	},

@@ -4,7 +4,6 @@ return {
 	cmd = { "ConformInfo" },
 	keys = {
 		{
-			-- Customize or remove this keymap to your liking
 			"<leader>fm",
 			function()
 				require("conform").format({ async = true })
@@ -13,28 +12,35 @@ return {
 			desc = "Format buffer",
 		},
 	},
-	-- This will provide type hinting with LuaLS
 	---@module "conform"
 	---@type conform.setupOpts
 	opts = {
-		-- Define your formatters
 		formatters_by_ft = {
 			cmake = { "cmake_format" },
 			lua = { "stylua" },
 			python = { "isort", "black" },
-			javascript = { "prettier", "prettierd", stop_after_first = true },
+			javascript = { "prettierd", "prettier", stop_after_first = true },
+			javascriptreact = { "prettierd", "prettier", stop_after_first = true },
 			typescript = { "prettierd", "prettier", stop_after_first = true },
 			typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-			javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+			json = { "prettierd", "prettier", stop_after_first = true },
+			jsonc = { "prettierd", "prettier", stop_after_first = true },
+			yaml = { "prettierd", "prettier", stop_after_first = true },
+			html = { "prettierd", "prettier", stop_after_first = true },
+			css = { "prettierd", "prettier", stop_after_first = true },
+			scss = { "prettierd", "prettier", stop_after_first = true },
+			markdown = { "prettierd", "prettier", stop_after_first = true },
+			sh = { "shfmt" },
+			bash = { "shfmt" },
 			terraform = { "terraform", stop_after_first = true },
 			rust = { "rustfmt", stop_after_first = true },
 			c = { "clang-format", stop_after_first = true },
 			cpp = { "clang-format", stop_after_first = true },
+			-- gopls is the only client attached to Go buffers, and gofumpt is already
+			-- enabled there, so LSP formatting is the right authority.
+			go = { lsp_format = "prefer" },
 		},
-
-		-- Set default options
 		default_format_opts = { lsp_format = "fallback" },
-		-- Set up format-on-save
 		formatters = {
 			shfmt = {
 				prepend_args = { "-i", "2" },
@@ -45,7 +51,6 @@ return {
 		},
 	},
 	init = function()
-		-- If you want the formatexpr, here is the place to set it
 		vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 	end,
 }

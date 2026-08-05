@@ -1,85 +1,92 @@
+local parsers = {
+	"bash",
+	"c",
+	"cmake",
+	"cpp",
+	"css",
+	"diff",
+	"gdscript",
+	"gdshader",
+	"git_config",
+	"gitcommit",
+	"go",
+	"gomod",
+	"gowork",
+	"html",
+	"javascript",
+	"json",
+	"lua",
+	"luadoc",
+	"markdown",
+	"markdown_inline",
+	"python",
+	"query",
+	"regex",
+	"rust",
+	"toml",
+	"tsx",
+	"typescript",
+	"vim",
+	"vimdoc",
+	"yaml",
+}
+
 return {
 	"nvim-treesitter/nvim-treesitter",
-	branch = "master",
+	branch = "main",
 	build = ":TSUpdate",
 	event = { "BufReadPost", "BufNewFile" },
-	dependencies = {
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		"vrischmann/tree-sitter-templ",
-	},
-	main = "nvim-treesitter.configs",
-	opts = {
-		ensure_installed = {
-			"bash",
-			"c",
-			"cmake",
-			"cpp",
-			"go",
-			"html",
-			"javascript",
-			"lua",
-			"python",
-			"rust",
-			"templ",
-			"tsx",
-			"typescript",
-			"vim",
-			"vimdoc",
+	keys = {
+		{
+			"<c-space>",
+			function()
+				require("utils.incsel").grow()
+			end,
+			mode = { "n", "x" },
+			desc = "Expand selection to parent node",
 		},
-		auto_install = false,
-		highlight = { enable = true, use_languagetree = true },
-		indent = { enable = true },
-		incremental_selection = {
-			enable = true,
-			keymaps = {
-				init_selection = "<c-space>",
-				node_incremental = "<c-space>",
-				scope_incremental = "<c-s>",
-				node_decremental = "<M-space>",
-			},
-		},
-		textobjects = {
-			select = {
-				enable = true,
-				lookahead = true,
-				keymaps = {
-					["aa"] = "@parameter.outer",
-					["ia"] = "@parameter.inner",
-					["af"] = "@function.outer",
-					["if"] = "@function.inner",
-					["ac"] = "@class.outer",
-					["ic"] = "@class.inner",
-				},
-			},
-			move = {
-				enable = true,
-				set_jumps = true,
-				goto_next_start = {
-					["]m"] = "@function.outer",
-					["]]"] = "@class.outer",
-				},
-				goto_next_end = {
-					["]M"] = "@function.outer",
-					["]["] = "@class.outer",
-				},
-				goto_previous_start = {
-					["[m"] = "@function.outer",
-					["[["] = "@class.outer",
-				},
-				goto_previous_end = {
-					["[M"] = "@function.outer",
-					["[]"] = "@class.outer",
-				},
-			},
-			swap = {
-				enable = true,
-				swap_next = {
-					["<leader>a"] = "@parameter.inner",
-				},
-				swap_previous = {
-					["<leader>A"] = "@parameter.inner",
-				},
-			},
+		{
+			"<M-space>",
+			function()
+				require("utils.incsel").shrink()
+			end,
+			mode = "x",
+			desc = "Shrink selection to child node",
 		},
 	},
+	config = function()
+		-- The main branch has no highlight/indent modules; both are core APIs that
+		-- have to be turned on per buffer. Anything without a parser is skipped.
+		local function enable(buf)
+			if not pcall(vim.treesitter.start, buf) then
+				return
+			end
+			vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+		end
+
+		vim.api.nvim_create_autocmd("FileType", {
+			group = vim.api.nvim_create_augroup("user_treesitter", { clear = true }),
+			callback = function(args)
+				enable(args.buf)
+			end,
+		})
+
+		-- This plugin loads on BufReadPost, by which point FileType has already
+		-- fired for the buffer that triggered it.
+		for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+			if vim.api.nvim_buf_is_loaded(buf) then
+				enable(buf)
+			end
+		end
+
+		-- install() compiles via the tree-sitter CLI, so only ask for what is
+		-- actually missing instead of paying that cost on every startup.
+		local missing = vim.tbl_filter(function(lang)
+			return not pcall(vim.treesitter.language.inspect, lang)
+		end, parsers)
+
+		if #missing > 0 then
+			require("nvim-treesitter").install(missing)
+		end
+	end,
 }

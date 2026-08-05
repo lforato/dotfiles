@@ -1,4 +1,4 @@
-local theme = require("plugins.theme").colors
+local theme = require("utils.palette")
 local hl = vim.api.nvim_set_hl
 
 --------------------------------------------------------------------------------

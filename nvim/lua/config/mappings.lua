@@ -4,22 +4,15 @@ local keymap = require("utils.keymap")
 -- Toggle
 --------------------------------------------------------------------------------
 
-keymap("n", "<leader>tb", "<cmd>Gitsigns blame_line<cr>", { desc = "Toggle git blame" })
-keymap("n", "<leader>/", function()
-	require("Comment.api").toggle.linewise.current()
-end, { desc = "Toggle comment" })
-keymap(
-	"v",
-	"<leader>/",
-	"<ESC><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>",
-	{ desc = "Toggle comment" }
-)
+-- Wraps Nvim's built-in gc operator, so remap has to stay on.
+keymap("n", "<leader>/", "gcc", { desc = "Toggle comment", remap = true })
+keymap("x", "<leader>/", "gc", { desc = "Toggle comment", remap = true })
+
 keymap("n", "<leader>tt", function()
 	require("trouble").focus("diagnostics")
 end, { desc = "Toggle Trouble" })
-keymap("n", "tt", function()
-	require("trouble").focus("diagnostics")
-end, { desc = "Focus Trouble" })
+
+keymap("n", "<leader>te", "<cmd>EslintToggle<cr>", { desc = "Toggle ESLint" })
 
 --------------------------------------------------------------------------------
 -- Files and buffers

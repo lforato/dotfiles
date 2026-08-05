@@ -1,5 +1,7 @@
 vim.diagnostic.config({
-	update_in_insert = true,
+	-- Recomputing on every keystroke is expensive in a large TS project, and the
+	-- results are mid-edit noise anyway.
+	update_in_insert = false,
 	underline = true,
 	severity_sort = true,
 	signs = {
