@@ -68,7 +68,17 @@ return {
 				},
 			},
 		},
-		sources = { default = { "lsp", "path", "snippets", "buffer" } },
+		sources = {
+			default = { "lsp", "path", "snippets", "buffer", "minuet" },
+			providers = {
+				minuet = {
+					name = "minuet",
+					module = "minuet.blink",
+					score_offset = 8, -- Show Claude's suggestions above LSP/buffer matches
+					async = true,
+				},
+			},
+		},
 		fuzzy = { implementation = "prefer_rust_with_warning" },
 	},
 

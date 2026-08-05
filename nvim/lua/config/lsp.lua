@@ -157,5 +157,6 @@ vim.lsp.enable({
 	"rust_analyzer",
 	"neocmake",
 	"eslint",
-	-- ts_ls is handled by typescript-tools.nvim (lua/plugins/typescript-tools.lua)
+	"gdscript",
+	"ts_ls",
 })

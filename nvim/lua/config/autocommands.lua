@@ -13,6 +13,17 @@ vim.api.nvim_create_autocmd("FileType", {
 	end,
 })
 
+-- Tab settings for GDScript (Godot style guide requires tabs)
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "gdscript",
+	callback = function()
+		vim.opt_local.expandtab = false
+		vim.opt_local.tabstop = 4
+		vim.opt_local.shiftwidth = 4
+		vim.opt_local.softtabstop = 0
+	end,
+})
+
 -- Restore previous session when opening any non-$HOME directory
 vim.api.nvim_create_autocmd("VimEnter", {
 	group = vim.api.nvim_create_augroup("restore_session", { clear = true }),
