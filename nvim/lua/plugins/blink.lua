@@ -1,21 +1,6 @@
 local sources = { "lsp", "path", "snippets", "buffer" }
 local providers = {}
 
--- minuet is switched off without an API key (see lua/plugins/minuet.lua). Both
--- the source list and the provider entry have to go with it: blink resolves
--- every declared provider's module, so leaving the entry behind fails its
--- healthcheck with "module 'minuet.blink' not found".
-if vim.env.ANTHROPIC_API_KEY ~= nil and vim.env.ANTHROPIC_API_KEY ~= "" then
-	table.insert(sources, "minuet")
-
-	providers.minuet = {
-		name = "minuet",
-		module = "minuet.blink",
-		score_offset = 8, -- Show Claude's suggestions above LSP/buffer matches
-		async = true,
-	}
-end
-
 return {
 	"saghen/blink.cmp",
 	dependencies = { { "rafamadriz/friendly-snippets" }, { "L3MON4D3/LuaSnip", version = "v2.*" } },

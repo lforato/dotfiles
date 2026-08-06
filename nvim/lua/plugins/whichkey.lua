@@ -17,7 +17,6 @@ return {
 			zindex = 1000,
 		},
 		spec = {
-			{ "<leader>a", group = "AI / Claude" },
 			{ "<leader>c", group = "Code" },
 			{ "<leader>d", group = "Debug" },
 			{ "<leader>f", group = "File" },

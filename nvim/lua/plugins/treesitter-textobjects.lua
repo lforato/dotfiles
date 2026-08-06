@@ -47,7 +47,6 @@ return {
 		{ "[[", move("goto_previous_start", "@class.outer"), mode = { "n", "x", "o" }, desc = "Previous class start" },
 		{ "[]", move("goto_previous_end", "@class.outer"), mode = { "n", "x", "o" }, desc = "Previous class end" },
 
-		-- Moved off <leader>a/<leader>A so claudecode.nvim can own that prefix.
 		{ "]a", swap("swap_next", "@parameter.inner"), desc = "Swap parameter with next" },
 		{ "[a", swap("swap_previous", "@parameter.inner"), desc = "Swap parameter with previous" },
 	},
